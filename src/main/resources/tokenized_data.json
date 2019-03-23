@@ -1,0 +1,28 @@
+{
+  "text": "john",
+  "ssn": "SSN-9398-5670-8231-9087",
+  "array": [
+    "tval1",
+    "tval2",
+    33,
+    true,
+    {
+      "val": "tval2"
+    }
+  ],
+  "obj": {
+    "person": {
+      "name": "david",
+      "ssn": "1111-2222-3333-4444"
+    }
+  },
+  "bool": true,
+  "numb": 243,
+  "__^tokenizedvalues^__": [
+    {
+      "template": "vtsUsersTemplate",
+      "group": "vtsUsers",
+      "path": "/ssn"
+    }
+  ]
+}

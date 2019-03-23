@@ -1,0 +1,422 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:piitok="http://www.mulesoft.org/schema/mule/piitok"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/piitok http://www.mulesoft.org/schema/mule/piitok/current/mule-piitok.xsd">
+
+    <piitok:config name="config">
+        <piitok:connection username="Manager1" password="Vormetric123!"/>
+    </piitok:config>
+
+    <flow name="executeReplaceSSNNodeMatchString">
+        <set-variable value='[{"matchers":[{"type":"STRING","path":"/text","value":"john"}],"paths":[{"template":"vtsUsersTemplate","group":"vtsUsers","path":"/ssn"}]}]'
+                      variableName="tokenizationRules" mimeType="application/json" />
+        <flow-ref name="setpayload"/>
+        <piitok:tokenize config-ref="config" json="#[payload]" rules="#[vars.tokenizationRules]"/>
+    </flow>
+
+    <flow name="testFullEWBRequest">
+        <set-variable value='[
+  {
+    "matchers": [
+      {
+        "type": "STRING",
+        "path": "/request/attributes/requestPath",
+        "value": "/api/process/iam/verifysmschallenge"
+      },
+      {
+        "type": "STRING",
+        "path": "/request/attributes/method",
+        "value": "POST"
+      }
+    ],
+    "paths": [
+      {
+        "template": "vttCustomerEmail",
+        "group": "vtgCustomerPII",
+        "path": "/email"
+      }
+    ]
+  },
+  {
+    "matchers": [
+      {
+        "type": "STRING",
+        "path": "/request/attributes/requestPath",
+        "value": "/api/datastream/v1/events"
+      }
+    ],
+    "paths": [
+      {
+        "template": "vtgCustomerPII",
+        "group": "vttCustomerEmail",
+        "path": "/testemail"
+      }
+    ]
+  }
+]
+'
+                      variableName="tokenizationRules" mimeType="application/json" />
+        <set-payload value='#[output application/json ---
+{"request":{"payload":{"testemail":"srinivasan.dillibabu@eastwestbank.com","name":"fname"},"attributes":{"clientCertificate":null,"listenerPath":"/api/*","requestPath":"/api/prc/anonymous-datastream/v1/events","queryString":"","remoteAddress":"/172.30.0.52:45920","method":"POST","scheme":"http","localAddress":"ip-172-30-0-179/172.30.0.179:8091","relativePath":"/api/prc/anonymous-datastream/v1/events","requestUri":"/api/prc/anonymous-datastream/v1/events","uriParams":{},"queryParams":{},"headers":{"x-ssl-client-verify":"NONE","host":"devopenapi.velobank.com","x-real-ip":"8.36.116.206","x-forwarded-for":"8.36.116.206","content-length":"75","content-type":"application/json","cache-control":"no-cache","postman-token":"a2fc37e2-0070-408f-8eb9-67546501215f","user-agent":"PostmanRuntime/7.3.0","accept":"*/*","accept-encoding":"gzip, deflate"},"version":"HTTP/1.1"}},"response":{"payload":"{\n  \"message\": \"Request sent, will be processed soon\"\n}","attributes":{"reasonPhrase":null,"statusCode":201,"headers":{}}},"__^tokenizedvalues^__":[]}        ]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <flow name="test2">
+        <set-variable value='[
+  {
+    "matchers": [
+      {
+        "type": "STRING",
+        "path": "/request/attributes/requestPath",
+        "value": "/api/process/iam/verifysmschallenge"
+      },
+      {
+        "type": "STRING",
+        "path": "/request/attributes/method",
+        "value": "POST"
+      }
+    ],
+    "paths": [
+      {
+        "template": "vttCustomerEmail",
+        "group": "vtgCustomerPII",
+        "path": "/email"
+      }
+    ]
+  },
+  {
+    "matchers": [
+      {
+        "type": "STRING",
+        "path": "/request/attributes/requestPath",
+        "value": "/api/datastream/v1/events"
+      }
+    ],
+    "paths": [
+      {
+        "template": "vtgCustomerPII",
+        "group": "vttCustomerEmail",
+        "path": "/testemail"
+      }
+    ]
+  }
+]
+'
+                      variableName="tokenizationRules" mimeType="application/json" />
+        <set-payload value='#[output application/json --- {
+  "request": {
+    "payload": {
+      "cis": "0",
+      "InstanceID": "56236701819094138433276522300432510450",
+      "Source": "",
+      "undefined": {
+        "mid": "SSN-98754959581319784242632584220569712139",
+        "this_pageName": "Velo : Mortgage : Home Page",
+        "this_url": "https://stageproducts.eastwestbank.com/en/mortgage.html",
+        "prev_pageName": "Velo : Apply : ",
+        "platform": "Dot Com",
+        "et_dimensions": "1920x1090",
+        "et_orientation": "landscape"
+      }
+    },
+    "attributes": {
+      "clientCertificate": null,
+      "listenerPath": "/api/*",
+      "requestPath": "/api/datastream/v1/events",
+      "queryString": "",
+      "remoteAddress": "/172.30.0.206:53294",
+      "method": "POST",
+      "scheme": "http",
+      "localAddress": "ip-172-30-0-73/172.30.0.73:8091",
+      "relativePath": "/api/datastream/v1/events",
+      "requestUri": "/api/datastream/v1/events",
+      "uriParams": {},
+      "queryParams": {},
+      "headers": {
+        "x-ssl-client-verify": "NONE",
+        "host": "devopenapi.velobank.com",
+        "x-real-ip": "12.249.231.14",
+        "x-forwarded-for": "12.249.231.14",
+        "content-length": "365",
+        "authorization": "Bearer eyJraWQiOiJXajJ0akRlV0RHMmk0alU4RnQ4b1ZsaFNpcEM5bzZSakRpb2tEMVB4TDRZIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULjVOOXRDeGxpYk80X3g5d3RkRnptbjVxZW1HeTFhOUZiUTRESzBYRC1aMkkiLCJpc3MiOiJodHRwczovL3Nzby10ZXN0LnZlbG9iYW5rLmNvbS9vYXV0aDIvYXVzZjJjMThxcXRtR0h5WDgwaDciLCJhdWQiOiJodHRwczovL2Rldm9wZW5hcGkudmVsb2JhbmsuY29tLyIsImlhdCI6MTU0MDgzNTc4OCwiZXhwIjoxNTQwODM5Mzg4LCJjaWQiOiIwb2FnZTU1ZmM4SWRwRWl6STBoNyIsInNjcCI6WyJhcGk6cmVhZCJdLCJzdWIiOiIwb2FnZTU1ZmM4SWRwRWl6STBoNyJ9.EWDawhHGIDNBBjsmlbAh2-0wAed_Pm46FeooLRygIgEAfLCu6U0OE4WsmGsqS4o4vG9XjH3ehf6w2KMtRTbq-pzIS8dfAaIAPK8GX-UI5KRpBpUaugzt_Lr-6ksxNA_lBJDN0uUB14yAZIcDLLp4nbuZ06O3dttVwS5n2caB4PoW6Xnn7GkoA8xuMGIPN4-B6R__yv3nuV1xFkgOz4d1bH9DLZb8agpN7SNoe1-OteJXFurtoH7Qs2dg_IvLmwg5FgRSNeMVQHUmN9DpFiQVk2eYD0CyrRNY2ztMgYH6pLNRjcKreHAxAas2NyEt0N5mqKcb1Tb81iSBjjeBexdIKw",
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "postman-token": "2fc9650e-b3c8-4c3e-86c4-15e886bc6d93",
+        "user-agent": "PostmanRuntime/7.3.0",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate"
+      },
+      "version": "HTTP/1.1"
+    }
+  },
+  "response": {
+    "payload": {"message": "Request sent, will be processed soon"},
+    "attributes": {
+      "reasonPhrase": null,
+      "statusCode": 201,
+      "headers": {}
+    }
+  }
+}]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <flow name="tokenizeFlow">
+        <set-payload value='#[output application/json --- {
+	"text" : "john",
+	"ssn" : "1111-2222-3333-4444",
+	"array" : [
+	    "tval1",
+	    "tval2",
+	    33,
+	    true,
+	    {
+	        "val": "tval2"
+	    }
+	],
+	"obj" : {
+	    "person": {
+            "name": "david",
+            "ssn": "1111-2222-3333-4444"
+        }
+	},
+	"bool": true,
+	"numb": 243
+} ]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+    <flow name="detokenizeFlow">
+        <set-payload value='#[output application/json --- {
+	"text" : "john",
+	"ssn" : "SSN-9398-5670-8231-9087",
+	"array" : [
+	    "tval1",
+	    "tval2",
+	    33,
+	    true,
+	    {
+	        "val": "tval2"
+	    }
+	],
+	"obj" : {
+	    "person": {
+            "name": "david",
+            "ssn": "1111-2222-3333-4444"
+        }
+	},
+	"bool": true,
+	"numb": 243,
+    "__^tokenizedvalues^__": [
+        {
+          "template": "vtsUsersTemplate",
+          "group": "vtsUsers",
+          "path": "/ssn"
+        }
+    ]
+} ]' />
+        <piitok:detokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <sub-flow name="setpayload">
+        <set-payload value='#[output application/json --- {
+	"text" : "john",
+	"ssn" : "1111-2222-3333-4444",
+	"array" : [
+	    "tval1",
+	    "tval2",
+	    33,
+	    true,
+	    {
+	        "val": "tval2"
+	    }
+	],
+	"obj" : {
+	    "person": {
+            "name": "david",
+            "ssn": "1111-2222-3333-4444"
+        }
+	},
+	"bool": true,
+	"numb": 243
+} ]' />
+    </sub-flow>
+
+
+    <flow name="testJsonPath">
+        <set-variable value='[
+  {
+    "matchers": [
+      {
+        "type": "REGEX",
+        "path": "/request/path",
+        "value": "/api/prc/test/.*/send"
+      }
+    ],
+    "paths": [
+      {
+        "template": "vttCustomerEmail",
+        "group": "vtgCustomerPII",
+        "path": "sp:$.request.arr.*.ssn"
+      }
+    ]
+  }
+]
+'
+                      variableName="tokenizationRules" mimeType="application/json" />
+        <set-payload value='#[output application/json --- {
+  "request": {
+    "path": "/api/prc/test/johnsmith/send",
+    "arr": [
+        { "ssn" : "1111-2222-3333-4444" },
+        { "ssn" : "4444-3333-3333-4444" }
+    ]
+  }
+}]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <flow name="tokenizeFlowNullPayload">
+        <set-payload value='#[output application/json --- {
+	"text" : "john",
+	"ssn" : null,
+	"array" : [
+	    "tval1",
+	    "tval2",
+	    33,
+	    true,
+	    {
+	        "val": "tval2"
+	    }
+	],
+	"obj" : {
+	    "person": {
+            "name": "david",
+            "ssn": null
+        }
+	},
+	"bool": true,
+	"numb": 243
+} ]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <flow name="tokenizeFlowNullArray">
+        <set-payload value='#[output application/json --- {
+  "actor": {
+    "id": "00uf2ciivyzio8ZnZ0h7",
+    "type": "User",
+    "alternateId": "muleuserdev@velobank.com",
+    "displayName": "Mule User",
+    "detailEntry": null
+  },
+  "client": {
+    "userAgent": {
+      "rawUserAgent": "AHC/1.0",
+      "os": "Unknown",
+      "browser": "UNKNOWN"
+    },
+    "zone": "null",
+    "device": "Unknown",
+    "id": null,
+    "ipAddress": "52.35.147.213",
+    "geographicalContext": {
+      "city": "Boardman",
+      "state": "Oregon",
+      "country": "United States",
+      "postalCode": "97818",
+      "geolocation": {
+        "lat": 45.8491,
+        "lon": -119.7143
+      }
+    }
+  },
+  "authenticationContext": {
+    "authenticationProvider": null,
+    "credentialProvider": null,
+    "credentialType": null,
+    "issuer": null,
+    "interface": null,
+    "authenticationStep": 0,
+    "externalSessionId": "trszfCx9W0STJSVtdYvCe7adg"
+  },
+  "displayMessage": "Update user profile for Okta",
+  "eventType": "user.account.update_profile",
+  "outcome": {
+    "result": "SUCCESS",
+    "reason": null
+  },
+  "published": "2018-11-26T19:23:24.093Z",
+  "securityContext": {
+    "asNumber": null,
+    "asOrg": null,
+    "isp": null,
+    "domain": null,
+    "isProxy": null
+  },
+  "severity": "INFO",
+  "debugContext": {
+    "debugData": {
+      "requestId": "W-xILP4inm2dx@t856BdaAAABrc",
+      "requestUri": "/api/v1/users/n1.g@ewb11.com",
+      "changedAttributes": "CIS_Number,lastName,firstName,mobilePhone",
+      "url": "/api/v1/users/n1.g@ewb11.com?"
+    }
+  },
+  "legacyEventType": "core.user.config.profile_update.success",
+  "transaction": {
+    "type": "WEB",
+    "id": "W-xILP4inm2dx@t856BdaAAABrc",
+    "detail": {}
+  },
+  "uuid": "f5f48b1b-9ba7-464b-ac87-8b046057ce3f",
+  "version": "0",
+  "request": {
+    "ipChain": [
+      {
+        "ip": "52.35.147.213",
+        "geographicalContext": {
+          "city": "Boardman",
+          "state": "Oregon",
+          "country": "United States",
+          "postalCode": "97818",
+          "geolocation": {
+            "lat": 45.8491,
+            "lon": -119.7143
+          }
+        },
+        "version": "V4",
+        "source": null
+      }
+    ]
+  },
+  "target": null
+}]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+
+    <flow name="tokenizeFlowArrayPayload">
+        <set-payload value='#[output application/json --- {
+          "request": {
+            "payload":{
+                "Customer":{
+                    "Names":[
+                                {
+                                    "LastName":"Engimuri"
+                                },
+                                {
+                                    "LastName":"D"
+                                }
+                        ]
+                }
+            },
+            "path": "/api/prc/test/johnsmith/send",
+            "arr": [
+                { "ssn" : "1111-2222-3333-4444" },
+                { "ssn" : "4444-3333-3333-4444" }
+            ]
+          }
+        }]' />
+        <piitok:tokenize config-ref="config" json="#[payload]"/>
+    </flow>
+</mule>
